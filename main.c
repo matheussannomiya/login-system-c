@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>   
 #include <stdlib.h>
+#include <time.h>
 
 typedef struct{
     char user[20];
@@ -101,13 +102,21 @@ void password_login(char correct_password[], Data *base, char user[]){
 
     FILE *log = fopen("datalog.txt", "a");
 
+    time_t now = 0;
+    time(&now);
+
+    struct tm *cur_time = localtime(&now);
+    char s[100];
+
+    strftime(s, 100, "%m-%d-%Y %H:%M:%S", cur_time);
+
     while(tries < 3){
         printf("\nPassword: ");
         fgets(password_typed, 20, stdin);
         password_typed[strcspn(password_typed, "\n")] = '\0';
         if(strcmp(password_typed, correct_password) == 0){
             printf("\nWelcome Back %s!", user);
-            fprintf(log, "%s logged\n", user);
+            fprintf(log, "[%s] LOGIN SUCCESS | user: %s\n", s, user);
             tries = 0;
             break;
         }else{
