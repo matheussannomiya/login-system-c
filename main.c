@@ -124,7 +124,7 @@ void password_login(char correct_password[], Data *base, char user[]){
 }
 
 int load_txt(Data *base, int capacity){
-    FILE *file = fopen("datasystem.txt", "r");
+    FILE *file = fopen("datasystem.txt", "a+");
 
     if(file == NULL){
         printf("File error!\n");
