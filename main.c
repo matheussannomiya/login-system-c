@@ -11,18 +11,25 @@ typedef struct{
     int id;
 }Data;
 
-int load_txt(Data *base, int capacity);
-void login(Data *base, int totalusers);
-int registeer(Data **base, int totalusers, int *capacity);
-void password_login(char correct_password[], Data *base, char user[]);
-void syncToFile(Data *base, int totalusers);
+int load_txt(Data base[]);
+void login(Data base[], int totalusers);
+int registeer(Data base[], int totalusers);
+void password_login(char correct_password[], Data base[], char user[]);
+void syncToFile(Data new);
+int hash(int key);
+int hashString(char s[]);
+void clearTable(Data member[]);
+int idValidation(Data member[], int iduser);
+void insertTable(Data member[], Data u);
+Data *searchTable(Data member[], char user[]);
 
 int main(){
     srand(time(NULL));
-    int capacity = 100;
-    Data *member = (Data*) malloc(capacity * sizeof(Data));
+    Data member[TAM];
+    clearTable(member);
+    
     int option = 0;
-    int totalusers = load_txt(member, capacity);
+    int totalusers = load_txt(member);
 
     while(option != 3){
     printf("\n******WELCOME TO THE APP******\n");
@@ -32,17 +39,16 @@ int main(){
 
     switch(option){
         case 1: login(member, totalusers); break;
-        case 2: totalusers = registeer(&member, totalusers, &capacity); 
-                syncToFile(member, totalusers); break;
+        case 2: totalusers = registeer(member, totalusers); 
+                break;
         case 3: break;
         default: printf("Insert a valid value\n"); break;
     }
-}
-    free(member);
+} 
     return 0;
 }
 
-void login(Data *base, int totalusers){
+void login(Data base[], int totalusers){
     char username_typed[20];
     char password[20];
     char username[20];
@@ -52,57 +58,47 @@ void login(Data *base, int totalusers){
     while(getchar() != '\n');
     fgets(username_typed, 20, stdin);
     username_typed[strcspn(username_typed, "\n")] = '\0';
+    int index = hashString(username_typed);
 
-    for(int x = 0; x < totalusers; x++){
-        if(strcmp(username_typed, base[x].user) == 0){
-            flag = 0;
-            password_login(base[x].password, base, base[x].user);
-            break;
-        }
-        else{
-            flag = -1;
-        }
-    }
-
-    if(flag == -1){
+    if(strcmp(username_typed, base[index].user) == 0){
+        flag = 0;
+        password_login(base[index].password, base, base[index].user);
+    }else{
         printf("User not found\n");
     }
-    
+
 }
 
-int registeer(Data **base, int totalusers, int *capacity){
-    int cap;
+int registeer(Data base[], int totalusers){
+    Data new;
     printf("\n********REGISTER********\n");
+
+    do{
     printf("\nUser: ");
-
-    cap - *capacity;
-    if(totalusers == cap){
-        *capacity = (*capacity) * 2;
-        cap = *capacity;
-        Data *temp = realloc(*base, cap * sizeof(Data));
-        if(temp == NULL){
-            printf("\nRealocation error.\n");
-        }
-        *base = temp;
-        temp = NULL;
-    }
-
     while(getchar() != '\n');
-    fgets((*base)[totalusers].user, 20, stdin);
-    (*base)[totalusers].user[strcspn((*base)[totalusers].user, "\n")] = '\0';
-
+    fgets(new.user, 20, stdin);
+    new.user[strcspn(new.user, "\n")] = '\0';
+    if(searchTable(base, new.user) != NULL)
+        printf("Invalid username (already being used).\n");
+    }while(searchTable(base, new.user) != NULL);
+    
     printf("\nPassword: ");
-    fgets((*base)[totalusers].password, 20, stdin);
-    (*base)[totalusers].password[strcspn((*base)[totalusers].password, "\n")] = '\0';
+    fgets(new.password, 20, stdin);
+    new.password[strcspn(new.password, "\n")] = '\0';   
 
-    (*base)[totalusers].id = rand() % (9999 - 1000 + 1) + 1000;
+    new.id = rand() % (9999 - 1000 + 1) + 1000;
 
+    while(idValidation(base, new.id) == 1)
+        new.id = rand() % (9999 - 1000 + 1) + 1000;
+
+    insertTable(base, new);
+    syncToFile(new);
     totalusers++;
 
     return totalusers;
 }
 
-void password_login(char correct_password[], Data *base, char user[]){
+void password_login(char correct_password[], Data base[], char user[]){
     char password_typed[20];
     int tries = 0;
 
@@ -138,7 +134,8 @@ void password_login(char correct_password[], Data *base, char user[]){
     fclose(log);
 }
 
-int load_txt(Data *base, int capacity){
+int load_txt(Data base[]){
+    Data aux;
     FILE *file = fopen("datasystem.txt", "a+");
 
     if(file == NULL){
@@ -147,21 +144,66 @@ int load_txt(Data *base, int capacity){
 
     int i = 0;
 
-    while(i < capacity && fscanf(file, "%s %s %i", base[i].user, base[i].password, base[i].id) == 3){
+    while(fscanf(file, "%s %s %i", &aux.user, &aux.password, &aux.id) == 3){
+        insertTable(base, aux);
         i++;
     }
     fclose(file);
     return i;
 }
 
-void syncToFile(Data *base, int totalusers){
+void syncToFile(Data new){
     FILE *file = fopen("datasystem.txt", "a");
 
     if(file == NULL){
         printf("Sync to file error.\n");
     }
 
-    fprintf(file,"%s %s %i\n", base[totalusers - 1].user, base[totalusers - 1].password, base[totalusers - 1].id);
+    fprintf(file,"%s %s %i\n", new.user, new.password, new.id);
 
     fclose(file);
+}
+
+int hash(int key){
+    return key % TAM;
+}
+
+int hashString(char s[]){
+    int sizeS = strlen(s);
+    unsigned int hash = 0;
+    for(int i = 0; i < sizeS; i++)
+        hash+= s[i] * (i+1);
+    return hash % TAM;
+}
+
+void clearTable(Data member[]){
+    for(int i = 0; i < TAM; i++){
+        strcpy(member[i].user, "");
+    }
+}
+
+void insertTable(Data member[], Data u){
+    int id = hashString(u.user);
+    /*while(strlen(member[id].user) > 0)
+        id = hash(id + 1);*/
+    member[id] = u;
+}
+
+int idValidation(Data member[], int iduser){
+    for(int x = 0; x < TAM; x++){
+        if(member[x].id == iduser)
+            return 1;
+    }
+    return 0;
+}
+
+Data *searchTable(Data member[], char user[]){
+    int index = hashString(user);
+
+    if(strcmp(member[index].user, user) == 0)
+        return &member[index];
+    else{
+        return NULL;
+    }
+    
 }
