@@ -1,17 +1,25 @@
 # login-system-c
 # Mini Login System in C
 
-A simple login system developed in C, focused on file handling and basic authentication.
+A simple authentication system developed in C, focused on file handling, hashing (hash table), and basic user management.
 
 ## Features
-- User registration  
-- Login authentication  
-- Data stored in a text file  
-- Login datalog with timestamp (date and time)
+- User registration
+- Login authentication via username
+- Hash table-based user lookup (O(1) average)
+- Data persistence using text file
+- Login logging with timestamp (date and time)
+- Internal user ID system
+
+## Architecture
+- Username is used as the primary key for hash table indexing
+- Password is validated after user lookup
+- ID is used as an internal identifier (not for login/search)
 
 ## In Progress
-- Password hashing  
-- Improved logging system (log levels, better structure)
+- Collision handling in hash table
+- Improved data structure organization
+- Password security improvements (hashing in future)
 
 ## How to Run
 ```bash
