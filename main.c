@@ -3,9 +3,12 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define TAM 31
+
 typedef struct{
     char user[20];
     char password[20];
+    int id;
 }Data;
 
 int load_txt(Data *base, int capacity);
@@ -15,6 +18,7 @@ void password_login(char correct_password[], Data *base, char user[]);
 void syncToFile(Data *base, int totalusers);
 
 int main(){
+    srand(time(NULL));
     int capacity = 100;
     Data *member = (Data*) malloc(capacity * sizeof(Data));
     int option = 0;
@@ -90,8 +94,10 @@ int registeer(Data **base, int totalusers, int *capacity){
     printf("\nPassword: ");
     fgets((*base)[totalusers].password, 20, stdin);
     (*base)[totalusers].password[strcspn((*base)[totalusers].password, "\n")] = '\0';
+
+    (*base)[totalusers].id = rand() % (9999 - 1000 + 1) + 1000;
+
     totalusers++;
-    
 
     return totalusers;
 }
@@ -141,7 +147,7 @@ int load_txt(Data *base, int capacity){
 
     int i = 0;
 
-    while(i < capacity && fscanf(file, "%s %s", base[i].user, base[i].password) == 2){
+    while(i < capacity && fscanf(file, "%s %s %i", base[i].user, base[i].password, base[i].id) == 3){
         i++;
     }
     fclose(file);
@@ -155,7 +161,7 @@ void syncToFile(Data *base, int totalusers){
         printf("Sync to file error.\n");
     }
 
-    fprintf(file,"%s %s\n", base[totalusers - 1].user, base[totalusers - 1].password);
+    fprintf(file,"%s %s %i\n", base[totalusers - 1].user, base[totalusers - 1].password, base[totalusers - 1].id);
 
     fclose(file);
 }
