@@ -209,7 +209,7 @@ int idValidation(Bucket member[], int iduser){
 
 Data *searchTable(Bucket member[], char user[]){
     int index = hashString(user);
-    searchList(&member[index], user);
+    return searchList(&member[index], user);
 }
 
 void clearList(Bucket *l){
