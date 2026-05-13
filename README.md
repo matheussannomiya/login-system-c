@@ -7,19 +7,22 @@ A simple authentication system developed in C, focused on file handling, hashing
 - User registration
 - Login authentication via username
 - Hash table-based user lookup (O(1) average)
+- Collision handling using separate chaining (linked lists)
 - Data persistence using text file
 - Login logging with timestamp (date and time)
 - Internal user ID system
 
 ## Architecture
-- Username is used as the primary key for hash table indexing
+- Hash table implemented using an array of buckets
+- Each bucket stores a linked list of users (separate chaining)
+- Username is used as the primary key for hash indexing
 - Password is validated after user lookup
 - ID is used as an internal identifier (not for login/search)
 
 ## In Progress
-- Collision handling in hash table
-- Improved data structure organization
 - Password security improvements (hashing in future)
+- Code refactoring and input handling improvements
+- Further optimization of data structure organization
 
 ## How to Run
 ```bash
