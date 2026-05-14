@@ -24,7 +24,18 @@ A simple authentication system developed in C, focused on file handling, hashing
 - Code refactoring and input handling improvements
 - Further optimization of data structure organization
 
+## Project Structure
+```text
+.
+├── main.c
+├── hash.c
+├── hash.h
+├── datasystem.txt
+└── datalog.txt
+```
+
 ## How to Run
 ```bash
-gcc main.c -o login
-./login
+gcc main.c hash.c -o login_system
+./login_system
+```
