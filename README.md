@@ -8,7 +8,7 @@ A simple authentication system developed in C, focused on file handling, hashing
 - Login authentication via username
 - Hash table-based user lookup (O(1) average)
 - Collision handling using separate chaining (linked lists)
-- Data persistence using text file
+- Data persistence using text file (modularized storage system)
 - Login logging with timestamp (date and time)
 - Internal user ID system
 
@@ -18,6 +18,7 @@ A simple authentication system developed in C, focused on file handling, hashing
 - Username is used as the primary key for hash indexing
 - Password is validated after user lookup
 - ID is used as an internal identifier (not for login/search)
+- Storage system modularized to handle file operations separately
 
 ## In Progress
 - Password security improvements (hashing in future)
@@ -27,15 +28,24 @@ A simple authentication system developed in C, focused on file handling, hashing
 ## Project Structure
 ```text
 .
-├── main.c
-├── hash.c
-├── hash.h
+├── src/
+│   ├── main.c
+│   ├── hash.c
+│   ├── storage.c
+│   └── datalog.c
+│
+├── include/
+│   ├── hash.h
+│   ├── storage.h
+│   └── types.h
+│
 ├── datasystem.txt
-└── datalog.txt
+├── datalog.txt
+└── Makefile (optional)
 ```
 
 ## How to Run
 ```bash
-gcc main.c hash.c -o login_system
+gcc src/main.c src/hash.c src/storage.c -Iinclude -o login_system
 ./login_system
 ```
