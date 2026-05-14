@@ -1,18 +1,9 @@
 #ifndef HASH_H
 #define HASH_H
 
+#include "types.h"
+
 #define TAM 31
-
-typedef struct data{
-    char user[20];
-    char password[20];
-    int id;
-    struct data *next;
-}Data;
-
-typedef struct{
-    Data *head;
-}Bucket;
 
 int hash(int key);
 int hashString(char s[]);

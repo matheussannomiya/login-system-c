@@ -3,12 +3,12 @@
 #include <stdlib.h>
 #include <time.h>
 #include "hash.h"
+#include "storage.h"
 
-int load_txt(Bucket base[]);
+
 void login(Bucket base[], int totalusers);
 int registeer(Bucket base[], int totalusers);
 void password_login(char correct_password[], Data *base, char user[]);
-void syncToFile(Data new);
 
 int main(){
     srand(time(NULL));
@@ -120,35 +120,5 @@ void password_login(char correct_password[], Data *base, char user[]){
     }
 
     fclose(log);
-}
-
-int load_txt(Bucket base[]){
-    Data aux;
-    FILE *file = fopen("datasystem.txt", "a+");
-
-    if(file == NULL){
-        printf("File error!\n");
-    }
-
-    int i = 0;
-
-    while(fscanf(file, "%s %s %i", &aux.user, &aux.password, &aux.id) == 3){
-        insertTable(base, aux);
-        i++;
-    }
-    fclose(file);
-    return i;
-}
-
-void syncToFile(Data new){
-    FILE *file = fopen("datasystem.txt", "a");
-
-    if(file == NULL){
-        printf("Sync to file error.\n");
-    }
-
-    fprintf(file,"%s %s %i\n", new.user, new.password, new.id);
-
-    fclose(file);
 }
 
