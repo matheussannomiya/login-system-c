@@ -1,4 +1,5 @@
 # login-system-c
+
 # Mini Login System in C
 
 A simple authentication system developed in C, focused on file handling, hashing (hash table), and basic user management.
@@ -6,6 +7,7 @@ A simple authentication system developed in C, focused on file handling, hashing
 ## Features
 - User registration
 - Login authentication via username
+- Password masking during input
 - Hash table-based user lookup (O(1) average)
 - Collision handling using separate chaining (linked lists)
 - Data persistence using text file (modularized storage system)
@@ -31,8 +33,7 @@ A simple authentication system developed in C, focused on file handling, hashing
 ├── src/
 │   ├── main.c
 │   ├── hash.c
-│   ├── storage.c
-│   └── datalog.c
+│   └── storage.c
 │
 ├── include/
 │   ├── hash.h
@@ -42,10 +43,3 @@ A simple authentication system developed in C, focused on file handling, hashing
 ├── datasystem.txt
 ├── datalog.txt
 └── Makefile (optional)
-```
-
-## How to Run
-```bash
-gcc src/main.c src/hash.c src/storage.c -Iinclude -o login_system
-./login_system
-```
