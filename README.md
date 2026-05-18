@@ -43,3 +43,10 @@ A simple authentication system developed in C, focused on file handling, hashing
 ├── datasystem.txt
 ├── datalog.txt
 └── Makefile (optional)
+```
+## How to Run
+```bash
+gcc src/main.c src/hash.c src/storage.c -Iinclude -o login_system
+./login_system
+```
+
