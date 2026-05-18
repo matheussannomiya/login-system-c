@@ -2,30 +2,43 @@
 
 # Mini Login System in C
 
-A simple authentication system developed in C, focused on file handling, hashing (hash table), and basic user management.
+A simple authentication system developed in C, focused on low-level programming concepts such as hashing, file handling, modularization, and basic user management.
 
 ## Features
 - User registration
-- Login authentication via username
+- Login authentication
 - Password masking during input
-- Hash table-based user lookup (O(1) average)
+- Password hashing using FNV-1a
+- Hash table-based user lookup (average O(1))
 - Collision handling using separate chaining (linked lists)
-- Data persistence using text file (modularized storage system)
-- Login logging with timestamp (date and time)
+- Persistent storage using text files
+- Login logging with timestamp
 - Internal user ID system
+- Modularized architecture using separate `.c` and `.h` files
 
 ## Architecture
 - Hash table implemented using an array of buckets
 - Each bucket stores a linked list of users (separate chaining)
 - Username is used as the primary key for hash indexing
-- Password is validated after user lookup
-- ID is used as an internal identifier (not for login/search)
-- Storage system modularized to handle file operations separately
+- Password hashes are stored instead of plain-text passwords
+- Password validation is performed by comparing hashes
+- Storage system separated into dedicated modules
+
+## Security Notes
+This project uses the FNV-1a hash algorithm for educational purposes only.
+
+Although it demonstrates the concept of password hashing, FNV-1a is **not suitable for real-world password security** because it is fast and not resistant to brute-force attacks.
+
+Real authentication systems should use dedicated password hashing algorithms such as:
+- bcrypt
+- Argon2
+- PBKDF2
 
 ## In Progress
-- Password security improvements (hashing in future)
-- Code refactoring and input handling improvements
-- Further optimization of data structure organization
+- Input validation improvements
+- Better file handling and error checking
+- Refactoring and code organization improvements
+- Future migration to stronger password hashing algorithms
 
 ## Project Structure
 ```text
