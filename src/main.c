@@ -2,6 +2,7 @@
 #include <string.h>   
 #include <stdlib.h>
 #include <time.h>
+#include <conio.h>
 #include "hash.h"
 #include "storage.h"
 
@@ -9,6 +10,7 @@
 void login(Bucket base[], int totalusers);
 int registeer(Bucket base[], int totalusers);
 void password_login(char correct_password[], Data *base, char user[]);
+void maskpassword(char *password);
 
 int main(){
     srand(time(NULL));
@@ -71,8 +73,9 @@ int registeer(Bucket base[], int totalusers){
     }while(result != NULL);
     
     printf("\nPassword: ");
-    fgets(new.password, 20, stdin);
-    new.password[strcspn(new.password, "\n")] = '\0';   
+    maskpassword(new.password);
+    new.password[strcspn(new.password, "\n")] = '\0';
+    // new.password = hashcripto(new.password);   
 
     new.id = rand() % (9999 - 1000 + 1) + 1000;
 
@@ -102,8 +105,10 @@ void password_login(char correct_password[], Data *base, char user[]){
 
     while(tries < 3){
         printf("\nPassword: ");
-        fgets(password_typed, 20, stdin);
+        maskpassword(password_typed);
         password_typed[strcspn(password_typed, "\n")] = '\0';
+        // password_typed = hashcripto(password_typed);
+
         if(strcmp(password_typed, correct_password) == 0){
             printf("\nWelcome Back %s!", user);
             fprintf(log, "[%s] LOGIN SUCCESS | user: %s\n", s, user);
@@ -122,3 +127,26 @@ void password_login(char correct_password[], Data *base, char user[]){
     fclose(log);
 }
 
+void maskpassword(char *password){
+    char ch;
+    int i = 0;
+
+    while(1){
+        ch = getch();
+
+        if(ch == 13){               // treating the enter (enter = 13)
+            password[i] = '\0';
+            break;
+        }
+        if(ch == 8){                // treating the backspace
+            if(i > 0){                 
+                i--;
+                printf("\b \b");        // removing '*' from the terminal
+            }
+        }else{
+            password[i] = ch;
+            printf("*");
+            i++;
+        }
+    }
+}
