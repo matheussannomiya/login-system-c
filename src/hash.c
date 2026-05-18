@@ -49,7 +49,7 @@ void insertList(Bucket *l, Data user){
     Data *new = malloc(sizeof(Data));
     if(new != NULL){
         strcpy(new->user, user.user);
-        strcpy(new->password, user.password);
+        new->password_hash = user.password_hash; 
         new->id = user.id;
         new->next = l->head;
         l->head = new;

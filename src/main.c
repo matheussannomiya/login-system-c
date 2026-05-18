@@ -9,8 +9,9 @@
 
 void login(Bucket base[], int totalusers);
 int registeer(Bucket base[], int totalusers);
-void password_login(char correct_password[], Data *base, char user[]);
+void password_login(unsigned int correct_hash, Data *base, char user[]);
 void maskpassword(char *password);
+unsigned int fnv1a(const char *str);
 
 int main(){
     srand(time(NULL));
@@ -50,7 +51,7 @@ void login(Bucket base[], int totalusers){
     found = searchTable(base, username_typed);
 
     if(found != NULL){
-        password_login(found->password, found, found->user);
+        password_login(found->password_hash, found, found->user);
     }else{
         printf("User not found\n");
     }
@@ -61,6 +62,7 @@ int registeer(Bucket base[], int totalusers){
     Data new;
     printf("\n********REGISTER********\n");
     Data *result;
+    char password[20];
 
     do{
     printf("\nUser: ");
@@ -73,9 +75,9 @@ int registeer(Bucket base[], int totalusers){
     }while(result != NULL);
     
     printf("\nPassword: ");
-    maskpassword(new.password);
-    new.password[strcspn(new.password, "\n")] = '\0';
-    // new.password = hashcripto(new.password);   
+    maskpassword(password);
+    password[strcspn(password, "\n")] = '\0';
+    new.password_hash = fnv1a(password);   
 
     new.id = rand() % (9999 - 1000 + 1) + 1000;
 
@@ -89,8 +91,9 @@ int registeer(Bucket base[], int totalusers){
     return totalusers;
 }
 
-void password_login(char correct_password[], Data *base, char user[]){
+void password_login(unsigned int correct_hash, Data *base, char user[]){
     char password_typed[20];
+    unsigned int hash;
     int tries = 0;
 
     FILE *log = fopen("datalog.txt", "a");
@@ -107,9 +110,9 @@ void password_login(char correct_password[], Data *base, char user[]){
         printf("\nPassword: ");
         maskpassword(password_typed);
         password_typed[strcspn(password_typed, "\n")] = '\0';
-        // password_typed = hashcripto(password_typed);
+        hash = fnv1a(password_typed);
 
-        if(strcmp(password_typed, correct_password) == 0){
+        if(hash == correct_hash){
             printf("\nWelcome Back %s!", user);
             fprintf(log, "[%s] LOGIN SUCCESS | user: %s\n", s, user);
             tries = 0;
@@ -149,4 +152,14 @@ void maskpassword(char *password){
             i++;
         }
     }
+}
+
+unsigned int fnv1a(const char *str){        // basic crypto fnv-1a
+    unsigned int hash = 2166136261u;        
+    while(*str != '\0'){                        // while the last string's letter
+        hash ^= (const char)*str;               //  bitwise XOR
+        hash *= 16777619u;                      
+        str++;                                  // next string's letter
+    }
+    return hash;                                
 }

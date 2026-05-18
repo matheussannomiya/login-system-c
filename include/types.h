@@ -3,7 +3,7 @@
 
 typedef struct data{
     char user[20];
-    char password[20];
+    unsigned int password_hash;
     int id;
     struct data *next;
 }Data;

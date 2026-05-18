@@ -14,7 +14,7 @@ int load_txt(Bucket base[]){
 
     int i = 0;
 
-    while(fscanf(file, "%s %s %i", aux.user, aux.password, &aux.id) == 3){
+    while(fscanf(file, "%s %u %i", aux.user, aux.password_hash, &aux.id) == 3){
         insertTable(base, aux);
         i++;
     }
@@ -29,7 +29,7 @@ void syncToFile(Data new_user){
         printf("Sync to file error.\n");
     }
 
-    fprintf(file,"%s %s %i\n", new_user.user, new_user.password, new_user.id);
+    fprintf(file,"%s %u %i\n", new_user.user, new_user.password_hash, new_user.id);
 
     fclose(file);
 }
